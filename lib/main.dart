@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 void main() {
   runApp(MaterialApp(
     home: DigitalPetApp(),
@@ -14,7 +15,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   String petName = "Your Pet";
   int happinessLevel = 50;
   int hungerLevel = 50;
-  
+
   // Function to increase happiness and update hunger when playing with the pet
   void _playWithPet() {
     setState(() {
@@ -49,6 +50,16 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     }
   }
 
+  Color petColor() { 
+    if (happinessLevel > 70) { 
+      return Colors.green; // Happy
+    } else if (happinessLevel >= 30) {
+      return Colors.yellow; // Neutral
+    } else { 
+      return Colors.red; // Unhappy
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,36 +70,32 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset('assets/images/cat2.png', width: 150, height: 150),
             Text(
               'Name: $petName',
               style: const TextStyle(fontSize: 20.0),
             ),
-            Image.asset('assets/images/cat.png', width: 150, height: 150),
-            
+            Container(
+              width: 150, 
+              height: 150, 
+              color: petColor(), 
+              child: Image.asset('assets/images/cat.png', fit: BoxFit.cover),
+            ),
             const SizedBox(height: 16.0),
-            
             Text(
               'Happiness Level: $happinessLevel',
               style: const TextStyle(fontSize: 20.0),
             ),
-            
             const SizedBox(height: 16.0),
-            
             Text(
               'Hunger Level: $hungerLevel',
               style: const TextStyle(fontSize: 20.0),
             ),
-
             const SizedBox(height: 32.0),
-            
             ElevatedButton(
               onPressed: _playWithPet,
               child: const Text('Play with Your Pet'),
             ),
-            
             const SizedBox(height: 16.0),
-            
             ElevatedButton(
               onPressed: _feedPet,
               child: const Text('Feed Your Pet'),
