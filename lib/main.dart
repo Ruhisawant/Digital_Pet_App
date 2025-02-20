@@ -121,36 +121,53 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                labelText: 'What\'s your pet\'s name?',
-                border: OutlineInputBorder(),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 230,
+                  child: TextField(
+                    controller: _controller,
+                    textAlign: TextAlign.center,
+                    decoration: const InputDecoration(
+                      labelText: "What's your pet's name?",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      petName = _controller.text;
+                    });
+                  },
+                  child: const Text('Confirm'),
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  petName = _controller.text;
-                });
-              },
-              child: const Text('Confirm'),
-            ),
-            Text('Name: $petName', style: const TextStyle(fontSize: 20.0)),
+
+            const SizedBox(height: 30),
+            Text('Name: $petName', style: const TextStyle(fontSize: 40.0)),
+
+            const SizedBox(height: 10),
             Container(
-              width: 150,
-              height: 150,
+              width: 250,
+              height: 250,
               color: petColor(),
               child: Image.asset('assets/images/cat.png', fit: BoxFit.cover),
             ),
-            Text('Mood: ${petMood()}',
-                style: TextStyle(fontSize: 20.0, color: petColor())),
-            Text('Happiness Level: $happinessLevel',
-                style: const TextStyle(fontSize: 20.0)),
-            Text('Hunger Level: $hungerLevel',
-                style: const TextStyle(fontSize: 20.0)),
-            Text('Your pet will be hungry in $_seconds seconds',
-                style: const TextStyle(fontSize: 20.0)),
+
+            Text('Mood: ${petMood()}', style: TextStyle(fontSize: 20.0, color: petColor())),
+            
+            const SizedBox(height: 10),
+            Text('Happiness Level: $happinessLevel', style: const TextStyle(fontSize: 20.0)),
+            Text('Hunger Level: $hungerLevel', style: const TextStyle(fontSize: 20.0)),
+            
+            const SizedBox(height: 10),
+            Text('Your pet will be hungry in $_seconds seconds', style: const TextStyle(fontSize: 20.0)),
+            
             DropdownButton<String>(
               value: _selectedActivity,
               items: ['Play', 'Feed'].map((String value) {
@@ -165,17 +182,22 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
                 });
               },
             ),
+
             ElevatedButton(
               onPressed: _performActivity,
               child: const Text('Confirm Activity'),
             ),
+            const SizedBox(height: 20),
             Text('Energy Level: $_energyLevel',
                 style: const TextStyle(fontSize: 20.0)),
-            LinearProgressIndicator(
-              value: _energyLevel / 100.0,
-              minHeight: 10.0,
-              backgroundColor: Colors.grey,
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+            SizedBox(
+              width: 300,
+              child: LinearProgressIndicator(
+                value: _energyLevel / 100.0,
+                minHeight: 10.0,
+                backgroundColor: Colors.grey,
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+              ),
             ),
           ],
         ),
