@@ -17,11 +17,11 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   String petName = "Your Pet";
   int happinessLevel = 50;
   int hungerLevel = 50;
-  int energyLevel = 50;
+  int _energyLevel = 50;
   int _seconds = 30;
   Timer? _timer;
+  String _selectedActivity = 'Play';
 
-  // Change pet color based on happiness level
   Color petColor() {
     if (happinessLevel > 70) {
       return Colors.green;
@@ -31,37 +31,33 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
       return Colors.red;
     }
   }
-  
-  // Change pet mood based on happiness level
-  String petMood() { 
-    if (happinessLevel > 70) { 
+
+  String petMood() {
+    if (happinessLevel > 70) {
       return '😁';
     } else if (happinessLevel >= 30) {
       return '😑';
-    } else { 
+    } else {
       return '😭';
     }
   }
 
-  // Function to increase happiness and update hunger when playing with the pet
   void _playWithPet() {
     setState(() {
       happinessLevel = (happinessLevel + 10).clamp(0, 100);
       _updateHunger();
-      energyLevel = (energyLevel - 10).clamp(0, 100);
+      _energyLevel = (_energyLevel - 10).clamp(0, 100);
     });
   }
 
-  // Function to decrease hunger and update happiness when feeding the pet
   void _feedPet() {
     setState(() {
       hungerLevel = (hungerLevel - 10).clamp(0, 100);
       _updateHappiness();
-      energyLevel = (energyLevel + 10).clamp(0, 100);
+      _energyLevel = (_energyLevel + 10).clamp(0, 100);
     });
   }
 
-  // Update happiness based on hunger level
   void _updateHappiness() {
     if (hungerLevel < 30) {
       happinessLevel = (happinessLevel - 20).clamp(0, 100);
@@ -70,7 +66,6 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     }
   }
 
-  // Increase hunger level slightly when playing with the pet
   void _updateHunger() {
     hungerLevel = (hungerLevel + 5).clamp(0, 100);
     if (hungerLevel > 100) {
@@ -79,11 +74,9 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     }
   }
 
-  // Start and restart the countdown timer
   void _countdown() {
     _timer?.cancel();
     _seconds = 30;
-
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_seconds > 0) {
         setState(() {
@@ -96,6 +89,14 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
         });
       }
     });
+  }
+
+  void _performActivity() {
+    if (_selectedActivity == 'Play') {
+      _playWithPet();
+    } else if (_selectedActivity == 'Feed') {
+      _feedPet();
+    }
   }
 
   @override
@@ -127,7 +128,6 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
                 border: OutlineInputBorder(),
               ),
             ),
-
             ElevatedButton(
               onPressed: () {
                 setState(() {
@@ -136,60 +136,43 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
               },
               child: const Text('Confirm'),
             ),
-
-            Text(
-              'Name: $petName',
-              style: const TextStyle(fontSize: 20.0),
-            ),
-
+            Text('Name: $petName', style: const TextStyle(fontSize: 20.0)),
             Container(
               width: 150,
               height: 150,
               color: petColor(),
               child: Image.asset('assets/images/cat.png', fit: BoxFit.cover),
             ),
-            
-            const SizedBox(height: 16.0),
-            Text(
-              'Mood: ${petMood()}',
-              style: TextStyle(fontSize: 20.0, color: petColor(),)
+            Text('Mood: ${petMood()}',
+                style: TextStyle(fontSize: 20.0, color: petColor())),
+            Text('Happiness Level: $happinessLevel',
+                style: const TextStyle(fontSize: 20.0)),
+            Text('Hunger Level: $hungerLevel',
+                style: const TextStyle(fontSize: 20.0)),
+            Text('Your pet will be hungry in $_seconds seconds',
+                style: const TextStyle(fontSize: 20.0)),
+            DropdownButton<String>(
+              value: _selectedActivity,
+              items: ['Play', 'Feed'].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedActivity = newValue!;
+                });
+              },
             ),
-            Text(
-              'Happiness Level: $happinessLevel',
-              style: const TextStyle(fontSize: 20.0),
-            ),
-            
-            const SizedBox(height: 16.0),
-            Text(
-              'Hunger Level: $hungerLevel',
-              style: const TextStyle(fontSize: 20.0),
-            ),
-            
-            const SizedBox(height: 32.0),
-            Text(
-              'Your pet will be hungry in $_seconds seconds',
-              style: const TextStyle(fontSize: 20.0),
-            ),
-            
-            const SizedBox(height: 32.0),
             ElevatedButton(
-              onPressed: _playWithPet,
-              child: const Text('Play with Your Pet'),
+              onPressed: _performActivity,
+              child: const Text('Confirm Activity'),
             ),
-            
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _feedPet,
-              child: const Text('Feed Your Pet'),
-            ),
-
-            const SizedBox(height: 16.0),
-            Text(
-              'Energy Level: $energyLevel',
-              style: const TextStyle(fontSize: 20.0),
-            ),
+            Text('Energy Level: $_energyLevel',
+                style: const TextStyle(fontSize: 20.0)),
             LinearProgressIndicator(
-              value: energyLevel / 100.0,
+              value: _energyLevel / 100.0,
               minHeight: 10.0,
               backgroundColor: Colors.grey,
               valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
