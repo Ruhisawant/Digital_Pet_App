@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 void main() {
   runApp(MaterialApp(
     home: DigitalPetApp(),
@@ -61,6 +60,16 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     }
   }
 
+  String petMood() { 
+    if (happinessLevel > 70) { 
+      return '😁';
+    } else if (happinessLevel >= 30) {
+      return '😑';
+    } else { 
+      return '😭';
+    }
+  }
+
   // Controller for the TextField to get pet name input
   final TextEditingController _controller = TextEditingController();
 
@@ -100,6 +109,10 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
               child: Image.asset('assets/images/cat.png', fit: BoxFit.cover),
             ),
             const SizedBox(height: 16.0),
+            Text(
+              'Mood: ${petMood()}',
+              style: TextStyle(fontSize: 20.0, color: petColor(),)
+            ),
             Text(
               'Happiness Level: $happinessLevel',
               style: const TextStyle(fontSize: 20.0),
