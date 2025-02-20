@@ -84,6 +84,16 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
       return Colors.red;
     }
   }
+  
+  String petMood() { 
+    if (happinessLevel > 70) { 
+      return '😁';
+    } else if (happinessLevel >= 30) {
+      return '😑';
+    } else { 
+      return '😭';
+    }
+  }
 
   @override
   void initState() {
@@ -137,7 +147,10 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
             ),
             
             const SizedBox(height: 16.0),
-            
+            Text(
+              'Mood: ${petMood()}',
+              style: TextStyle(fontSize: 20.0, color: petColor(),)
+            ),
             Text(
               'Happiness Level: $happinessLevel',
               style: const TextStyle(fontSize: 20.0),
