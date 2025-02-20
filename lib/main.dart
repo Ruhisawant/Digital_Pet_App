@@ -17,14 +17,38 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   String petName = "Your Pet";
   int happinessLevel = 50;
   int hungerLevel = 50;
+  int energyLevel = 50;
   int _seconds = 30;
   Timer? _timer;
+
+  // Change pet color based on happiness level
+  Color petColor() {
+    if (happinessLevel > 70) {
+      return Colors.green;
+    } else if (happinessLevel >= 30) {
+      return Colors.yellow;
+    } else {
+      return Colors.red;
+    }
+  }
+  
+  // Change pet mood based on happiness level
+  String petMood() { 
+    if (happinessLevel > 70) { 
+      return '😁';
+    } else if (happinessLevel >= 30) {
+      return '😑';
+    } else { 
+      return '😭';
+    }
+  }
 
   // Function to increase happiness and update hunger when playing with the pet
   void _playWithPet() {
     setState(() {
       happinessLevel = (happinessLevel + 10).clamp(0, 100);
       _updateHunger();
+      energyLevel = (energyLevel - 10).clamp(0, 100);
     });
   }
 
@@ -33,6 +57,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     setState(() {
       hungerLevel = (hungerLevel - 10).clamp(0, 100);
       _updateHappiness();
+      energyLevel = (energyLevel + 10).clamp(0, 100);
     });
   }
 
@@ -71,28 +96,6 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
         });
       }
     });
-  }
-
-
-  // Change pet color based on happiness level
-  Color petColor() {
-    if (happinessLevel > 70) {
-      return Colors.green;
-    } else if (happinessLevel >= 30) {
-      return Colors.yellow;
-    } else {
-      return Colors.red;
-    }
-  }
-  
-  String petMood() { 
-    if (happinessLevel > 70) { 
-      return '😁';
-    } else if (happinessLevel >= 30) {
-      return '😑';
-    } else { 
-      return '😭';
-    }
   }
 
   @override
@@ -157,31 +160,39 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
             ),
             
             const SizedBox(height: 16.0),
-            
             Text(
               'Hunger Level: $hungerLevel',
               style: const TextStyle(fontSize: 20.0),
             ),
             
             const SizedBox(height: 32.0),
-            
             Text(
               'Your pet will be hungry in $_seconds seconds',
               style: const TextStyle(fontSize: 20.0),
             ),
             
             const SizedBox(height: 32.0),
-            
             ElevatedButton(
               onPressed: _playWithPet,
               child: const Text('Play with Your Pet'),
             ),
             
             const SizedBox(height: 16.0),
-            
             ElevatedButton(
               onPressed: _feedPet,
               child: const Text('Feed Your Pet'),
+            ),
+
+            const SizedBox(height: 16.0),
+            Text(
+              'Energy Level: $energyLevel',
+              style: const TextStyle(fontSize: 20.0),
+            ),
+            LinearProgressIndicator(
+              value: energyLevel / 100.0,
+              minHeight: 10.0,
+              backgroundColor: Colors.grey,
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
             ),
           ],
         ),
