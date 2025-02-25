@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:confetti/confetti.dart';
+import 'dart:async';
 
 void main() {
   runApp(const MaterialApp(
@@ -98,7 +98,6 @@ class DigitalPetAppState extends State<DigitalPetApp> {
         timer.cancel();
         return;
       }
-
       setState(() {
         if (_seconds > 0) {
           _seconds--;
@@ -106,18 +105,16 @@ class DigitalPetAppState extends State<DigitalPetApp> {
           _seconds = 30;
           hungerLevel = (hungerLevel + 5).clamp(0, 100);
         }
-
         if (happinessLevel > 80) {
           winSeconds++;
         } else {
           winSeconds = 0;
         }
-
         if (hungerLevel >= 100 && happinessLevel <= 10) {
           gameOver = true;
         } else if (winSeconds >= 180) {
           hasWon = true;
-          _confettiController.play(); // Start confetti
+          _confettiController.play();
         }
       });
     });
@@ -315,8 +312,8 @@ class DigitalPetAppState extends State<DigitalPetApp> {
               child: LinearProgressIndicator(
                 value: _energyLevel / 100.0,
                 minHeight: 10.0,
-                backgroundColor: Colors.grey,
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+                backgroundColor: Colors.grey.shade400,
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
               ),
             ),
           ],
