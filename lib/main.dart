@@ -19,6 +19,9 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   int hungerLevel = 50;
   int _energyLevel = 50;
   int _seconds = 30;
+  int winSeconds = 0; 
+  bool gameOver = false; 
+  bool hasWon = false; 
   Timer? _timer;
   String _selectedActivity = 'Play';
 
@@ -76,21 +79,44 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   }
 
   void _countdown() {
-    _timer?.cancel();
-    _seconds = 30;
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_seconds > 0) {
+  _timer?.cancel();
+  _seconds = 30;
+  _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    if (gameOver || hasWon) {
+      timer.cancel();
+      return;
+    }
+
+    if (_seconds > 0) {
+      setState(() {
+        _seconds--;
+      });
+    } else {
+      setState(() {
+        _seconds = 30;
+        hungerLevel = (hungerLevel + 5).clamp(0, 100);
+      });
+    }
+
+    if (happinessLevel > 80) {
+      winSeconds++;
+      if (winSeconds >= 180) { 
         setState(() {
-          _seconds--;
-        });
-      } else {
-        setState(() {
-          _seconds = 30;
-          hungerLevel = (hungerLevel + 5).clamp(0, 100);
+          hasWon = true;
         });
       }
-    });
-  }
+    } else {
+      winSeconds = 0; 
+    }
+
+    if (hungerLevel >= 100 && happinessLevel <= 10) {
+      setState(() {
+        gameOver = true;
+      });
+    }
+  });
+}
+
 
   void _performActivity() {
     if (_selectedActivity == 'Play') {
@@ -98,6 +124,19 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     } else if (_selectedActivity == 'Feed') {
       _feedPet();
     }
+  }
+
+  void resetGame() { 
+    setState(() {
+      hasWon = false; 
+      gameOver = false; 
+      winSeconds = 0; 
+      happinessLevel = 50; 
+      hungerLevel = 50; 
+      _energyLevel = 50; 
+      _seconds = 30; 
+      _countdown(); 
+    });
   }
 
   @override
@@ -114,6 +153,42 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
 
   @override
   Widget build(BuildContext context) {
+    if (gameOver) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Game Over')), 
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, 
+            children: [
+              const Text('Game Over!', style: TextStyle(fontSize: 30, color: Colors.red)), 
+              const SizedBox(height: 20), 
+              ElevatedButton(
+                onPressed: resetGame,
+                child: const Text('Reset'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    if (hasWon) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('You Win')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, 
+            children: [
+              const Text('You Win', style: TextStyle(fontSize: 30, color: Colors.green)),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: resetGame,
+                child: const Text('Play Again'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Digital Pet App'),
