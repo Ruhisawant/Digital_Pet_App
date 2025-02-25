@@ -92,42 +92,34 @@ class DigitalPetAppState extends State<DigitalPetApp> {
   void _countdown() {
     _timer?.cancel();
     _seconds = 30;
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (gameOver || hasWon) {
         timer.cancel();
         return;
       }
-      if (_seconds > 0) {
-        setState(() {
+
+      setState(() {
+        if (_seconds > 0) {
           _seconds--;
-        });
-      } else {
-        setState(() {
+        } else {
           _seconds = 30;
           hungerLevel = (hungerLevel + 5).clamp(0, 100);
-        });
-      }
-      if (happinessLevel > 80) {
-        winSeconds++;
-        if (winSeconds >= 5) { 
-          setState(() {
-            hasWon = true;
-          });
         }
-      } else {
-        winSeconds = 0; 
-      }
-      if (hungerLevel >= 100 && happinessLevel <= 10) {
-        setState(() {
+
+        if (happinessLevel > 80) {
+          winSeconds++;
+        } else {
+          winSeconds = 0;
+        }
+
+        if (hungerLevel >= 100 && happinessLevel <= 10) {
           gameOver = true;
-        });
-      }
-      if (winSeconds >= 5) { 
-        setState(() {
+        } else if (winSeconds >= 180) {
           hasWon = true;
-        });
-        _confettiController.play(); // Start confetti
-      }
+          _confettiController.play(); // Start confetti
+        }
+      });
     });
   }
 
@@ -189,7 +181,7 @@ class DigitalPetAppState extends State<DigitalPetApp> {
       );
     }
 
-    // Winning screen
+    // Winning screen and confetti animation
     if (hasWon) {
       return Scaffold(
         body: Stack(
@@ -324,7 +316,7 @@ class DigitalPetAppState extends State<DigitalPetApp> {
                 value: _energyLevel / 100.0,
                 minHeight: 10.0,
                 backgroundColor: Colors.grey,
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
               ),
             ),
           ],
