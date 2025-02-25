@@ -173,7 +173,13 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     }
     if (hasWon) {
       return Scaffold(
-        appBar: AppBar(title: const Text('You Win')),
+      appBar: AppBar(
+        title: const Text(
+          'You Win',
+          style: TextStyle(fontSize: 40),
+        ),
+        backgroundColor: Colors.blueGrey,
+      ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center, 
