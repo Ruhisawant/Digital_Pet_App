@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:confetti/confetti.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -16,6 +17,7 @@ class DigitalPetApp extends StatefulWidget {
 
 class DigitalPetAppState extends State<DigitalPetApp> {
   final TextEditingController _controller = TextEditingController();
+  late ConfettiController _confettiController;
   String petName = "Your Pet";
   String _selectedActivity = 'Play';
   int happinessLevel = 50;
@@ -120,6 +122,12 @@ class DigitalPetAppState extends State<DigitalPetApp> {
           gameOver = true;
         });
       }
+      if (winSeconds >= 5) { 
+        setState(() {
+          hasWon = true;
+        });
+        _confettiController.play(); // Start confetti
+      }
     });
   }
 
@@ -149,12 +157,14 @@ class DigitalPetAppState extends State<DigitalPetApp> {
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(duration: const Duration(seconds: 5));
     _countdown(); // Starts the countdown timer when the app is initialized
   }
 
   @override
   void dispose() {
     _timer?.cancel(); // Cancels the timer when the widget is disposed of
+    _confettiController.dispose();
     super.dispose();
   }
 
@@ -182,21 +192,35 @@ class DigitalPetAppState extends State<DigitalPetApp> {
     // Winning screen
     if (hasWon) {
       return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, 
-            children: [
-              const Text('You Win!', style: TextStyle(fontSize: 50, color: Colors.green)),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: resetGame,
-                child: const Text('Play Again'),
+        body: Stack(
+          children: [
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center, 
+                children: [
+                  const Text('You Win!', style: TextStyle(fontSize: 50, color: Colors.green)),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: resetGame,
+                    child: const Text('Play Again'),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                colors: const [Colors.red, Colors.blue, Colors.purple, Colors.yellow, Colors.pink],
+              ),
+            ),
+          ],
         ),
       );
     }
+
 
     // Main gameplay screen
     return Scaffold(
