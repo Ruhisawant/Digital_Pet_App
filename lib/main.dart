@@ -56,6 +56,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
       _updateHappiness();
       _energyLevel = (_energyLevel + 10).clamp(0, 100);
     });
+    _countdown();
   }
 
   void _updateHappiness() {
@@ -115,7 +116,8 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Digital Pet'),
+        title: const Text('Digital Pet App'),
+        backgroundColor: Colors.blueGrey,
       ),
       body: Center(
         child: Column(
@@ -159,14 +161,26 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
               child: Image.asset('assets/images/cat.png', fit: BoxFit.cover),
             ),
 
-            Text('Mood: ${petMood()}', style: TextStyle(fontSize: 20.0, color: petColor())),
+            Text('Mood: ${petMood()}', style: const TextStyle(fontSize: 40.0, color: Colors.black)),
             
-            const SizedBox(height: 10),
-            Text('Happiness Level: $happinessLevel', style: const TextStyle(fontSize: 20.0)),
-            Text('Hunger Level: $hungerLevel', style: const TextStyle(fontSize: 20.0)),
-            
-            const SizedBox(height: 10),
-            Text('Your pet will be hungry in $_seconds seconds', style: const TextStyle(fontSize: 20.0)),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [
+                  Text('Happiness Level: $happinessLevel', style: const TextStyle(fontSize: 20.0)),
+                  const SizedBox(height: 10),
+                  Text('Hunger Level: $hungerLevel', style: const TextStyle(fontSize: 20.0)),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+            Text('Your pet will be hungry in $_seconds seconds', style: const TextStyle(fontSize: 20.0, color: Colors.red)),
             
             DropdownButton<String>(
               value: _selectedActivity,
